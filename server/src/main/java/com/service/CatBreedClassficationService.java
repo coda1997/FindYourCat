@@ -1,9 +1,19 @@
 package com.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.entity.Animal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -12,10 +22,12 @@ import java.io.IOException;
 @Slf4j
 @Service
 public class CatBreedClassficationService {
+    @Autowired
+    private RestTemplate restTemplate;
+
+    private final String filePath= "Todo";
 
     public void transferFile(MultipartFile file) throws IOException {
-        String filePath="";
-
         File file1=new File(filePath);
         if(!file1.exists()){
             boolean isSuccess=file1.mkdirs();
@@ -24,21 +36,24 @@ public class CatBreedClassficationService {
             }
         }
 
-
         String filename=file.getOriginalFilename();
         String newFilePath=filePath+filename;
         file.transferTo(new File(newFilePath));
     }
 
-    public String getCatInfo(MultipartFile file){
-        // 调用模型得到结果
+    public Animal getCatInfo(MultipartFile file) {
+        String uploadApi = "Todo";
 
-        JSONObject res=new JSONObject();
+        String filename = file.getOriginalFilename();
 
-        res.put("breed","cat");
-        res.put("gender","male");
-        res.put("age","2");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        return res.toJSONString();
+        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+        map.add("file", new FileSystemResource(filePath + filename));
+
+        HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(map, headers);
+
+        return restTemplate.postForObject(uploadApi, request, Animal.class);
     }
 }
