@@ -23,6 +23,7 @@
 hs_err_pid*
 
 server/.idea
+server/target
+server/model
 
-# add .DS_Store to .gitignore, for Mac OS X
 .DS_Store
