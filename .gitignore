@@ -23,3 +23,5 @@
 hs_err_pid*
 
 server/.idea
+server/target
+server/model
